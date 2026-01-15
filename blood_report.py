@@ -1,38 +1,70 @@
 import streamlit as st
 import pandas as pd
 
-age = st.slider("Age (years) : ", 0, 130, 50)
+# Page Configuration for a wide, professional layout
+st.set_page_config(page_title="Blood Analysis Dashboard", page_icon="🩸", layout="wide")
 
-option = st.selectbox(
-    "Gender : ",
-    ("Male", "Female"),
-    index=None,
-    placeholder="Select gender...",
-)
+# Custom CSS to improve table readability and header styling
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f8f9fa;
+    }
+    .stMetric {
+        background-color: #ffffff;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-"CBC"
+st.title("🩸 Clinical Blood Report Analysis")
+st.write("Enter the laboratory results below to generate an age and gender-adjusted analysis.")
 
-wbc = st.slider("WBC (mm\u00b3) : ", 0, 33000, 7000)
-rbc = st.slider("RBC (million/mm\u00b3) : ", 0.0, 16.0, 4.5)
-hgb = st.slider("HGB (g/dL) : ", 0.0, 50.0, 14.5)
-hct = st.slider("HCT (%)", 0, 100, 42)
-platelets = st.slider("Platelets (mm\u00b3) : ", 0, 900000, 300000)
+# Input Section - Using columns to save vertical space
+with st.container():
+    col_meta1, col_meta2 = st.columns([1, 1])
+    
+    with col_meta1:
+        age = st.slider("Age (years) : ", 0, 130, 25)
+    with col_meta2:
+        gender = st.selectbox(
+            "Gender : ",
+            ("Male", "Female"),
+            index=None,
+            placeholder="Select gender...",
+        )
 
-"CMP"
+st.divider()
 
-glucose = st.slider("Glucose - Fasting (mg/dL) : ", 0, 300, 85)
-sodium = st.slider("Sodium (mEq/dL) : ", 0, 300, 140)
-pottasium = st.slider("Pottasium (mEq/dL) : ", 0.0, 15.0, 4.0)
-creatinine = st.slider("Creatinine (mg/dL)", 0.0, 4.0, 0.9)
-albumin = st.slider("Albumin (g/dL)", 0.0, 17.0, 4.2)
-total_bilirubin = st.slider("Total Bilirubin (mg/dL)", 0.0, 4.0, 0.7)
+# Organizing Lab Results into categories
+st.subheader("Laboratory Data Entry")
+col1, col2 = st.columns(2)
+
+with col1:
+    with st.expander("Complete Blood Count (CBC)", expanded=True):
+        wbc = st.slider("WBC (mm³)", 0, 33000, 7000)
+        rbc = st.slider("RBC (million/mm³)", 0.0, 16.0, 4.5)
+        hgb = st.slider("HGB (g/dL)", 0.0, 50.0, 14.5)
+        hct = st.slider("HCT (%)", 0, 100, 42)
+        platelets = st.slider("Platelets (mm³)", 0, 900000, 300000)
+
+with col2:
+    with st.expander("Comprehensive Metabolic Panel (CMP)", expanded=True):
+        glucose = st.slider("Glucose - Fasting (mg/dL)", 0, 300, 85)
+        sodium = st.slider("Sodium (mEq/dL)", 0, 300, 140)
+        pottasium = st.slider("Potassium (mEq/dL)", 0.0, 15.0, 4.0)
+        creatinine = st.slider("Creatinine (mg/dL)", 0.0, 4.0, 0.9)
+        albumin = st.slider("Albumin (g/dL)", 0.0, 17.0, 4.2)
+        total_bilirubin = st.slider("Total Bilirubin (mg/dL)", 0.0, 4.0, 0.7)
 
 lab_data = {
-    "WBC (mm\u00b3)": wbc,
-    "RBC (million/mm\u00b3)": rbc,
+    "WBC (mm³)": wbc,
+    "RBC (million/mm³)": rbc,
     "HGB (g/dL)": hgb,
     "HCT (%)": hct,
-    "Platelets (mm\u00b3)": platelets,
+    "Platelets (mm³)": platelets,
     "Glucose - Fasting (mg/dL)": glucose,
     "Sodium (mEq/dL)": sodium,
     "Potassium (mEq/dL)": pottasium,
@@ -43,7 +75,6 @@ lab_data = {
 
 def get_age_gender_effect(test, value, gender, age):
     is_male = gender == "Male"
-    
     age_suffix = f" for a {age}-year-old {gender}."
     
     effects = {
@@ -66,20 +97,13 @@ def get_age_gender_effect(test, value, gender, age):
             "Low": "Low blood sugar; check caloric intake or medication.",
             "High": f"Elevated; metabolic risk increases significantly after age 45.",
             "Normal": "Strong metabolic control; glucose is well-managed."
-        },
-        "Albumin (g/dL)": {
-            "Low": "Could indicate nutritional gaps or liver stress.",
-            "High": "Typically indicates mild dehydration.",
-            "Normal": "Good protein synthesis and liver health" + age_suffix
         }
     }
-
     default_map = {"Low": "Value is below range.", "High": "Value is above range.", "Normal": "Healthy value" + age_suffix}
     return effects.get(test, default_map)
 
 def analyze_blood_report(data, gender, age):
     analysis_list = []
-
     ranges = {
         "WBC (mm³)": (4500, 11000),
         "RBC (million/mm³)": (4.5, 5.9) if gender == "Male" else (4.1, 5.1),
@@ -96,29 +120,39 @@ def analyze_blood_report(data, gender, age):
 
     for test, value in data.items():
         low, high = ranges.get(test, (0, 0))
-        
         if value < low:
             status = "Low"
-            effect = get_age_gender_effect(test, value, gender, age)["Low"]
         elif value > high:
             status = "High"
-            effect = get_age_gender_effect(test, value, gender, age)["High"]
         else:
             status = "Normal"
-            effect = get_age_gender_effect(test, value, gender, age)["Normal"]
+        
+        effect = get_age_gender_effect(test, value, gender, age)[status]
         
         analysis_list.append({
             "Test": test,
             "Result": value,
             "Reference Range": f"{low} - {high}",
             "Status": status,
-            "Age & Gender Adjusted Effect": effect
+            "Clinical Insight": effect
         })
-    
     return pd.DataFrame(analysis_list)
 
-if option and age:
-    df_report = analyze_blood_report(lab_data, option, age)
-    df_report
+# Execution and Styled Output
+if gender:
+    st.subheader("Diagnostic Results")
+    df_report = analyze_blood_report(lab_data, gender, age)
+
+    # Styling function
+    def highlight_status(val):
+        if val in ["High", "Low"]:
+            return 'background-color: #ffda6a; color: #856404; font-weight: bold;'
+        return 'background-color: #d4edda; color: #155724;'
+
+    styled_df = df_report.style.applymap(highlight_status, subset=['Status'])
+
+    st.dataframe(styled_df, use_container_width=True, hide_index=True)
+    
+    st.caption("Note: This analysis is for informational purposes and should be reviewed by a medical professional.")
 else:
-    st.warning("Select Gender.")    
+    st.info("💡 Please select your gender in the top section to generate the diagnostic analysis.")
