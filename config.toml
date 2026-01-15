@@ -1,0 +1,15 @@
+[theme]
+# The color for buttons, sliders, and the active page in the sidebar
+primaryColor = "#66ff4b"
+
+# The main background of your reports
+backgroundColor = "#FFFFFF"
+
+# The background color of the sidebar (where your navigation links are)
+secondaryBackgroundColor = "#F0F2F6"
+
+# The color of all your text
+textColor = "#31333F"
+
+# The font style for the whole app
+font = "sans serif"
