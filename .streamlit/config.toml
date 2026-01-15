@@ -1,1 +1,23 @@
+[theme]
+# A deep, trustworthy medical blue for buttons, sliders, and links
+primaryColor = "#0056b3"
 
+# A clean, light background for a clinical and sterile look
+backgroundColor = "#ffffff"
+
+# Slightly grey secondary background for sidebars and input widgets
+secondaryBackgroundColor = "#f0f2f6"
+
+# Dark slate text for high readability
+textColor = "#1c2b33"
+
+# Standard sans-serif font for a modern, professional feel
+font = "sans serif"
+
+[browser]
+# Sets a professional title in the browser tab
+gatherUsageStats = false
+
+[server]
+# Ensures the app runs smoothly for your engineering projects
+headless = true
