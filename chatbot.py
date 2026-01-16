@@ -1,7 +1,6 @@
 import streamlit as st
 import google.generativeai as genai
 
-# Custom CSS for a professional look
 st.markdown("""
     <style>
     .stApp {
@@ -82,4 +81,5 @@ if prompt := st.chat_input("How can I help you today?"):
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
+
             st.error(f"Error: {e}")
