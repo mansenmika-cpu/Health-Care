@@ -1,0 +1,2 @@
+🩺 SmartHealth AI: Specialized Health Care Assistant
+SmartHealth AI is an integrated health monitoring and diagnostic platform developed to provide users with immediate, data-driven health insights. By combining traditional medical calculators with the cutting-edge Google Gemini 2.5 Flash LLM, this application offers personalized clinical analysis while maintaining a strict focus on the healthcare domain
