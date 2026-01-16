@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
 
-# Page Configuration for a wide, professional layout
 st.set_page_config(page_title="Blood Analysis Dashboard", page_icon="🩸", layout="wide")
 
-# Custom CSS to improve table readability and header styling
 st.markdown("""
     <style>
     .main {
@@ -22,7 +20,6 @@ st.markdown("""
 st.title("🩸 Clinical Blood Report Analysis")
 st.write("Enter the laboratory results below to generate an age and gender-adjusted analysis.")
 
-# Input Section - Using columns to save vertical space
 with st.container():
     col_meta1, col_meta2 = st.columns([1, 1])
     
@@ -38,7 +35,6 @@ with st.container():
 
 st.divider()
 
-# Organizing Lab Results into categories
 st.subheader("Laboratory Data Entry")
 col1, col2 = st.columns(2)
 
@@ -138,12 +134,10 @@ def analyze_blood_report(data, gender, age):
         })
     return pd.DataFrame(analysis_list)
 
-# Execution and Styled Output
 if gender:
     st.subheader("Diagnostic Results")
     df_report = analyze_blood_report(lab_data, gender, age)
 
-    # Styling function
     def highlight_status(val):
         if val in ["High", "Low"]:
             return 'background-color: #ffda6a; color: #856404; font-weight: bold;'
@@ -156,3 +150,68 @@ if gender:
     st.caption("Note: This analysis is for informational purposes and should be reviewed by a medical professional.")
 else:
     st.info("💡 Please select your gender in the top section to generate the diagnostic analysis.")
+
+st.markdown("""
+    <style>
+    div.stButton > button {
+        height: 150px;    
+        font-size: 20px;
+        border-radius: 15px;
+        border: 2px solid #0056b3;
+        transition: 0.3s;
+    }
+    div.stButton > button:hover {
+        background-color: #0056b3;
+        color: white;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+import google.generativeai as genai
+
+genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+
+if gender:
+    st.divider()
+    st.subheader("🤖 AI Physician Insights")
+    st.write("Click below to get a comprehensive AI analysis of all combined laboratory results.")
+
+    if st.button("🔬 Generate AI Clinical Summary", use_container_width=True):
+        report_text = df_report.to_string(index=False)
+        
+        system_instruction = f"""
+        You are a specialized Medical Diagnostic Assistant.
+        The patient is a {age}-year-old {gender}.
+        
+        Data to analyze:
+        {report_text}
+        
+        Instructions:
+        1. Identify the most critical 'High' or 'Low' values first.
+        2. Explain how these specific markers might be related (e.g., if HGB and HCT are both low).
+        3. Suggest general lifestyle or dietary adjustments based on these specific results.
+        4. Keep the tone professional, empathetic, and concise.
+        5. ALWAYS include a prominent medical disclaimer.
+        """
+
+        model = genai.GenerativeModel(
+            model_name='gemini-2.5-flash',
+            system_instruction=system_instruction
+        )
+
+        with st.spinner("Analyzing laboratory markers..."):
+            try:
+                response = model.generate_content("Provide a comprehensive clinical summary of these blood results.")
+                
+                st.markdown(f"""
+                    <div style="background-color: #e8f4f8; padding: 20px; border-radius: 10px; border-left: 5px solid #2980b9;">
+                        {response.text}
+                    </div>
+                """, unsafe_allow_html=True)
+                
+                st.session_state["blood_analysis_complete"] = True
+                st.session_state["blood_summary"] = response.text
+                
+            except Exception as e:
+                st.error(f"AI Analysis failed: {e}")
+ 
