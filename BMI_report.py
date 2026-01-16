@@ -4,10 +4,9 @@ st.set_page_config(page_title="BMI Report", page_icon="⚖️")
 st.title("⚖️ BMI Calculator")
 
 # Sidebar for inputs to keep the main area clean
-with st.sidebar:
-    st.header("Input Parameters")
-    height = st.slider("Height (cm) : ", 0, 250, 170)
-    weight = st.slider("Weight (kg) : ", 0, 180, 60)
+st.header("Input Parameters")
+height = st.slider("Height (cm) : ", 0, 250, 170)
+weight = st.slider("Weight (kg) : ", 0, 180, 60)
 
 # Calculation
 BMI = weight * 10000 / (height * height)
@@ -35,3 +34,4 @@ st.markdown(f"""
 st.write("")
 
 st.info("BMI is a useful measure of overweight and obesity. It is calculated from your height and weight.")
+
