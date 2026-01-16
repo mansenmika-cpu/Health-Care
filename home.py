@@ -1,6 +1,5 @@
 import streamlit as st
 
-# Custom CSS for card-like buttons
 st.markdown("""
     <style>
     div.stButton > button {
@@ -35,3 +34,4 @@ with col2:
 with col3:
     if st.button("🩺\n\nHealth Care Assistant", use_container_width=True):
         st.switch_page("chatbot.py")
+
