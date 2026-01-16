@@ -22,7 +22,7 @@ st.write("Welcome to your personal health monitoring system. Select a module bel
 
 st.divider()
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     if st.button("🩸\n\nBlood Report Analysis", use_container_width=True):
@@ -31,3 +31,7 @@ with col1:
 with col2:
     if st.button("⚖️\n\nBMI & Weight Tracking", use_container_width=True):
         st.switch_page("BMI_report.py")
+
+with col3:
+    if st.button("🩺\n\nHealth Care Assistant", use_container_width=True):
+        st.switch_page("chatbot.py")
