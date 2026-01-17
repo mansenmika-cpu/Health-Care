@@ -68,8 +68,8 @@ st.markdown("""
 if st.button("🩺\n\nAnalyze Your BMI", use_container_width=True):
     system_instruction = f"""
     You are a specialized Health Care Assistant.
-    The user has a BMI of {bmi_val}, which is categorized as {category}.
-    1. Explain what this means for their health.
+    The user has a BMI of {bmi_val}, which is categorized as {category}, a age of {age} and a gender of {gender}.
+    1. Explain what this means for their health with considering about user's age and gender.
     2. Provide 3 actionable steps they should take.
     3. Mention potential risks (worst cases) if not managed.
     4. ALWAYS include a medical disclaimer.
@@ -90,6 +90,7 @@ if st.button("🩺\n\nAnalyze Your BMI", use_container_width=True):
             st.session_state["user_category"] = category
         except Exception as e:
             st.error(f"Error connecting to Gemini: {e}")
+
 
 
 
