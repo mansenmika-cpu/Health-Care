@@ -84,19 +84,18 @@ if st.button("🩺\n\nAnalyze Your BMI", use_container_width=True):
         try:
             response = model.generate_content(f"Provide a health analysis for a BMI of {bmi_val}")
 
+            st.subheader("AI Health Analysis")
             st.markdown(f"""
                     <div style="background-color: #e8f4f8; padding: 20px; border-radius: 10px; border-left: 5px solid #2980b9;">
                         {response.text}
                     </div>
                 """, unsafe_allow_html=True)
             
-            st.subheader("AI Health Analysis")
-            st.markdown(response.text)
-            
             st.session_state["user_bmi"] = bmi_val
             st.session_state["user_category"] = category
         except Exception as e:
             st.error(f"Error connecting to Gemini: {e}")
+
 
 
 
