@@ -7,13 +7,20 @@ st.set_page_config(page_title="BMI Report", page_icon="⚖️")
 st.title("⚖️ BMI Calculator")
 
 st.header("Input Parameters")
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 with col1:
     height = st.number_input("Height (cm) : ", 1, 250, 170)
 with col2:
     weight = st.number_input("Weight (kg) : ", 1, 180, 60)
 with col3:
-    age = st.number_input("Age", 0, 150)    
+    age = st.number_input("Age", 0, 150) 
+with col4:
+    gender = st.selectbox(
+        "Gender : ",
+        ("Male", "Female"),
+        index=None,
+        placeholder="Select gender...",
+    )
 
 if height > 0:
     BMI = weight * 10000 / (height * height)
@@ -83,5 +90,6 @@ if st.button("🩺\n\nAnalyze Your BMI", use_container_width=True):
             st.session_state["user_category"] = category
         except Exception as e:
             st.error(f"Error connecting to Gemini: {e}")
+
 
 
